@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>ひづけメモ</title>
 <meta name="description" content="日付つきのひとことメモと買うものメモ">
 <meta name="theme-color" content="#f3f5f8" media="(prefers-color-scheme: light)">
@@ -52,7 +52,8 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+html, body { overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--paper);
