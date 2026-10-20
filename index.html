@@ -91,6 +91,7 @@ body::before {
   background: var(--paper);
   padding-block: 16px 12px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 body.has-bg .bar, body.has-bg::before {
@@ -98,7 +99,8 @@ body.has-bg .bar, body.has-bg::before {
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
 }
 body.has-bg .bar { margin-inline: -16px; padding-inline: 16px; }
-.brand { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0; }
+.brand .sub { white-space: nowrap; }
 .brand h1 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: 0.04em; }
 .brand .sub { font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 form.entry {
@@ -111,7 +113,7 @@ form.entry {
 }
 form.entry:focus-within { border-color: var(--accent); }
 form.entry input {
-  flex: 1; min-width: 0;
+  flex: 1 1 0; min-width: 0; width: 0;
   border: 0; outline: 0; background: transparent; color: var(--ink);
   font-size: 16px; padding-block: 8px;
 }
@@ -182,11 +184,11 @@ li.done .text { color: var(--ink-soft); text-decoration: line-through; text-deco
 li.done { opacity: .75; }
 
 li.item.editing { display: block; padding: 10px; outline: 1.5px solid var(--accent); }
-.editor { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center; }
-.editor.noDate { grid-template-columns: 1fr; }
+.editor { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: center; }
+.editor.noDate { grid-template-columns: minmax(0, 1fr); }
 .editor input {
   color: var(--ink); background: var(--paper);
-  border: 1px solid var(--rule); border-radius: 10px; padding: 6px 8px; min-width: 0; font-size: 16px;
+  border: 1px solid var(--rule); border-radius: 10px; padding: 6px 8px; min-width: 0; width: 100%; font-size: 16px;
 }
 .editor input[type=date] { font-size: 14px; }
 .editor input:focus { outline: 0; border-color: var(--accent); }
@@ -197,7 +199,7 @@ li.item.editing { display: block; padding: 10px; outline: 1.5px solid var(--acce
   padding: 6px 12px; border-radius: 10px; cursor: pointer;
 }
 .ghost:hover { background: var(--rule); }
-@media (max-width: 380px) { .editor { grid-template-columns: 1fr; } }
+@media (max-width: 380px) { .editor { grid-template-columns: minmax(0, 1fr); } }
 
 details.past { margin-top: 28px; }
 details.past summary { cursor: pointer; list-style: none; font-size: 13px; color: var(--ink-soft); padding: 6px 0; }
@@ -230,10 +232,10 @@ details.past li.item { opacity: .6; }
 .status { margin-top: 32px; font-size: 11.5px; color: var(--ink-soft); text-align: center; }
 
 /* ---- 着せかえ ---- */
-.panel { display: grid; gap: 24px; margin-top: 12px; }
+.panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 12px; }
 .card {
   background: var(--sheet); border-radius: 16px; padding: 16px;
-  display: grid; gap: 12px;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px;
 }
 .card h2 { margin: 0; font-size: 14px; font-weight: 700; }
 .card .hint { margin: -6px 0 0; font-size: 12px; color: var(--ink-soft); }
@@ -278,8 +280,8 @@ details.past li.item { opacity: .6; }
 .pill.solid { background: var(--accent); color: var(--on-accent); }
 .pill.quiet { border-color: var(--rule); color: var(--ink-soft); font-weight: 400; }
 .pill input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-.range-row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; font-size: 13px; color: var(--ink-soft); }
-.range-row input { accent-color: var(--accent); width: 100%; }
+.range-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; font-size: 13px; color: var(--ink-soft); }
+.range-row input { accent-color: var(--accent); width: 100%; min-width: 0; }
 .range-row output { font-variant-numeric: tabular-nums; min-width: 3em; text-align: right; }
 .reset-row { display: flex; justify-content: center; }
 

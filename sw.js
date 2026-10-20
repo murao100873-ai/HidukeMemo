@@ -1,6 +1,6 @@
 // ひづけメモ: lets the app open without a connection.
 // Bump VERSION whenever you change index.html so phones pick up the new copy.
-const VERSION = "hizuke-v4";
+const VERSION = "hizuke-v5";
 const APP = ["./", "./index.html", "./manifest.webmanifest",
   "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
