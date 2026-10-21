@@ -34,6 +34,7 @@
   --accent: var(--accent-base);
   --on-accent: #ffffff;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, var(--sheet));
+  --mc-red: #e0483e; --mc-orange: #e98322; --mc-yellow: #d9a900; --mc-green: #2b9e66; --mc-blue: #3a78de; --mc-purple: #8c58d6;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -41,6 +42,7 @@
     --today: #ff8a73; --today-soft: #3a2420;
     --accent: color-mix(in srgb, var(--accent-base) 62%, #ffffff);
     --on-accent: #12151c;
+    --mc-red: #ff7d72; --mc-orange: #ffab5c; --mc-yellow: #f2cf4a; --mc-green: #5fd19a; --mc-blue: #7eaaff; --mc-purple: #bb92ff;
     color-scheme: dark;
   }
 }
@@ -49,6 +51,7 @@
   --today: #ff8a73; --today-soft: #3a2420;
   --accent: color-mix(in srgb, var(--accent-base) 62%, #ffffff);
   --on-accent: #12151c;
+  --mc-red: #ff7d72; --mc-orange: #ffab5c; --mc-yellow: #f2cf4a; --mc-green: #5fd19a; --mc-blue: #7eaaff; --mc-purple: #bb92ff;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -151,7 +154,7 @@ body.has-bg .group h2 { color: var(--ink); }
 ul.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 li.item {
   position: relative;
-  display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center;
+  display: grid; grid-template-columns: minmax(60px, auto) minmax(0, 1fr) auto; gap: 12px; align-items: center;
   background: var(--sheet); border-radius: 14px; padding: 10px 8px 10px 12px;
 }
 li.item.shop { grid-template-columns: auto 1fr auto; gap: 10px; padding-left: 8px; }
@@ -164,7 +167,7 @@ li.item .stamp, li.item .text { pointer-events: none; position: relative; }
 li.item .del, li.item .check { position: relative; z-index: 1; }
 .stamp { display: grid; justify-items: start; line-height: 1.2; }
 .stamp .md { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.stamp .rel { font-size: 11px; color: var(--ink-soft); }
+.stamp .rel { font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
 .is-today .stamp .rel { color: var(--today); font-weight: 700; }
 .text { min-width: 0; overflow-wrap: anywhere; }
 .del {
@@ -182,6 +185,29 @@ li.done .check { background: var(--accent); border-color: var(--accent); }
 li.done .check svg { opacity: 1; }
 li.done .text { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ink-soft) 60%, transparent); }
 li.done { opacity: .75; }
+
+[data-color="red"] { --mc: var(--mc-red); }
+[data-color="orange"] { --mc: var(--mc-orange); }
+[data-color="yellow"] { --mc: var(--mc-yellow); }
+[data-color="green"] { --mc: var(--mc-green); }
+[data-color="blue"] { --mc: var(--mc-blue); }
+[data-color="purple"] { --mc: var(--mc-purple); }
+li.item[data-color] {
+  background: color-mix(in srgb, var(--mc) 16%, var(--sheet));
+  box-shadow: inset 5px 0 0 var(--mc);
+}
+li.item[data-color] .stamp .md { color: color-mix(in srgb, var(--mc) 70%, var(--ink)); }
+li.shop[data-color]:not(.done) .check { border-color: var(--mc); }
+
+.memo-colors { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-block: 2px; }
+.memo-colors .lab { font-size: 12px; color: var(--ink-soft); }
+.memo-color {
+  width: 28px; height: 28px; border-radius: 50%; padding: 0; cursor: pointer;
+  border: 0; background: var(--mc);
+  box-shadow: 0 0 0 2px var(--sheet), 0 0 0 2px transparent;
+}
+.memo-color[data-color=""] { background: transparent; border: 2px dashed var(--rule); }
+.memo-color[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--sheet), 0 0 0 4px var(--ink); }
 
 li.item.editing { display: block; padding: 10px; outline: 1.5px solid var(--accent); }
 .editor { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: center; }
@@ -284,6 +310,18 @@ details.past li.item { opacity: .6; }
 .range-row input { accent-color: var(--accent); width: 100%; min-width: 0; }
 .range-row output { font-variant-numeric: tabular-nums; min-width: 3em; text-align: right; }
 .reset-row { display: flex; justify-content: center; }
+.seg {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px;
+  background: var(--paper); border-radius: 12px; padding: 4px;
+}
+.seg button {
+  border: 0; background: transparent; color: var(--ink-soft); cursor: pointer;
+  border-radius: 9px; padding: 8px 4px; font-size: 13px; font-weight: 700;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--sheet); color: var(--accent);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 18%, transparent);
+}
 
 /* ---- bottom tabs ---- */
 nav.tabs {
@@ -361,6 +399,16 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
       <div class="brand"><h1>着せかえ</h1></div>
     </div>
     <div class="panel">
+      <div class="card">
+        <h2>画面の明るさ</h2>
+        <p class="hint">「自動」はスマホの設定に合わせて切り替わります。</p>
+        <div class="seg" id="theme-seg" role="group" aria-label="画面の明るさ">
+          <button type="button" data-theme-choice="auto">自動</button>
+          <button type="button" data-theme-choice="light">ライト</button>
+          <button type="button" data-theme-choice="dark">ダーク</button>
+        </div>
+      </div>
+
       <div class="card">
         <h2>テーマの色</h2>
         <div class="swatches" id="swatches"></div>
@@ -454,6 +502,12 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
         if (d && diffDays(d, t) < -60) d = valid(t.getFullYear()+1, +m[1], +m[2]);
         return d;
       }],
+      // 4 digits as month+day: 1022 -> 10/22, 0105 -> 1/5
+      [/(?<![\d\/\-.:])(\d{2})(\d{2})(?![\d円時分:個枚件人%％])/, m => {
+        let d = valid(t.getFullYear(), +m[1], +m[2]);
+        if (d && diffDays(d, t) < -60) d = valid(t.getFullYear()+1, +m[1], +m[2]);
+        return d;
+      }],
       [/しあさって|明々後日/, () => addDays(t, 3)],
       [/あさって|明後日/, () => addDays(t, 2)],
       [/明日|あした|あす/, () => addDays(t, 1)],
@@ -524,7 +578,10 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
     form.addEventListener("submit", e => { e.preventDefault(); go(); });
   }
 
-  // shared inline editor (text, plus a date when given)
+  const MEMO_COLORS = [["", "色なし"], ["red", "赤"], ["orange", "オレンジ"], ["yellow", "黄"], ["green", "緑"], ["blue", "青"], ["purple", "紫"]];
+  const memoColor = c => MEMO_COLORS.some(([k]) => k && k === c) ? c : "";
+
+  // shared inline editor (text, a colour, plus a date when given)
   function editorEl(it, withDate, onSave, onClose) {
     const li = document.createElement("li");
     li.className = "item editing";
@@ -541,11 +598,28 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
     const textIn = document.createElement("input");
     textIn.type = "text"; textIn.id = "edit-text"; textIn.value = it.text;
     textIn.setAttribute("aria-label", "メモ"); textIn.setAttribute("enterkeyhint", "done");
+    let picked = memoColor(it.color);
+    const colorRow = document.createElement("div");
+    colorRow.className = "memo-colors"; colorRow.setAttribute("role", "group"); colorRow.setAttribute("aria-label", "色");
+    const lab = document.createElement("span"); lab.className = "lab"; lab.textContent = "色";
+    colorRow.append(lab);
+    const colorBtns = MEMO_COLORS.map(([k, name]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "memo-color"; b.dataset.color = k;
+      b.setAttribute("aria-label", name); b.title = name;
+      b.setAttribute("aria-pressed", k === picked ? "true" : "false");
+      b.addEventListener("click", () => {
+        picked = k;
+        colorBtns.forEach(x => x.setAttribute("aria-pressed", x.dataset.color === picked ? "true" : "false"));
+      });
+      colorRow.append(b);
+      return b;
+    });
     const row = document.createElement("div"); row.className = "editor-actions";
     const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "ghost"; cancel.textContent = "やめる";
     const ok = document.createElement("button"); ok.type = "button"; ok.className = "add-btn"; ok.textContent = "保存";
     row.append(cancel, ok);
-    form.append(textIn, row);
+    form.append(textIn, colorRow, row);
     li.append(form);
     cancel.addEventListener("click", onClose);
     form.addEventListener("keydown", e => { if (e.key === "Escape") { e.preventDefault(); onClose(); } });
@@ -555,7 +629,7 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
       const text = textIn.value.trim();
       if (!text || (dateIn && !dateIn.value)) { textIn.focus(); return; }
       done = true;
-      onSave(text, dateIn ? dateIn.value : null);
+      onSave(text, dateIn ? dateIn.value : null, picked);
     });
     requestAnimationFrame(() => { textIn.focus(); const n = textIn.value.length; try { textIn.setSelectionRange(n, n); } catch {} });
     return li;
@@ -617,15 +691,16 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
 
   function dateItemEl(it, fresh) {
     if (it.id === editingId) {
-      return editorEl(it, true, (text, date) => {
+      return editorEl(it, true, (text, date, color) => {
         editingId = null;
-        if (text === it.text && date === it.date) { renderDates(); return; }
-        putDate({ ...it, text, date }); showToast("直しました");
+        if (text === it.text && date === it.date && color === memoColor(it.color)) { renderDates(); return; }
+        putDate({ ...it, text, date, color }); showToast("直しました");
       }, () => { editingId = null; renderDates(); });
     }
     const d = fromKey(it.date);
     const li = document.createElement("li");
     li.className = "item" + (fresh ? " fresh" : "");
+    if (memoColor(it.color)) li.dataset.color = it.color;
     const st = document.createElement("div"); st.className = "stamp";
     const a = document.createElement("span"); a.className = "md"; a.textContent = md(d);
     const b = document.createElement("span"); b.className = "rel"; b.textContent = `${WD[d.getDay()]}・${rel(d)}`;
@@ -700,14 +775,15 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
 
   function shopItemEl(it, fresh) {
     if (it.id === shopEditing) {
-      return editorEl(it, false, text => {
+      return editorEl(it, false, (text, _d, color) => {
         shopEditing = null;
-        if (text === it.text) { renderShop(); return; }
-        putShop({ ...it, text }); showToast("直しました");
+        if (text === it.text && color === memoColor(it.color)) { renderShop(); return; }
+        putShop({ ...it, text, color }); showToast("直しました");
       }, () => { shopEditing = null; renderShop(); });
     }
     const li = document.createElement("li");
     li.className = "item shop" + (it.done ? " done" : "") + (fresh ? " fresh" : "");
+    if (memoColor(it.color)) li.dataset.color = it.color;
     const chk = document.createElement("button");
     chk.type = "button"; chk.className = "check"; chk.innerHTML = CHECK_SVG;
     chk.setAttribute("aria-pressed", it.done ? "true" : "false");
@@ -773,11 +849,36 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
     yomogi: { name: "てがき",       stack: '"Yomogi", "Hiragino Maru Gothic ProN", sans-serif' },
     pop:    { name: "ポップ",       stack: '"Hachi Maru Pop", "Hiragino Maru Gothic ProN", sans-serif' },
   };
-  const STYLE_DEFAULTS = { accent: "#2f55d4", font: "maru", veil: 0.55 };
+  const STYLE_DEFAULTS = { accent: "#2f55d4", font: "maru", veil: 0.55, theme: "auto" };
   let style = { ...STYLE_DEFAULTS, ...load(K_STYLE, {}) };
   if (!FONTS[style.font]) style.font = STYLE_DEFAULTS.font;
 
+  // light / dark: "auto" follows the phone
+  const hostTheme = root.getAttribute("data-theme");
+  let themeForced = false;
+  const darkQuery = window.matchMedia ? matchMedia("(prefers-color-scheme: dark)") : null;
+  function applyTheme() {
+    const t = style.theme;
+    if (t === "light" || t === "dark") { root.setAttribute("data-theme", t); themeForced = true; }
+    else if (themeForced) {
+      if (hostTheme) root.setAttribute("data-theme", hostTheme); else root.removeAttribute("data-theme");
+      themeForced = false;
+    }
+    const attr = root.getAttribute("data-theme");
+    const dark = attr ? attr === "dark" : !!(darkQuery && darkQuery.matches);
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute("content", dark ? "#12151c" : "#f3f5f8"));
+  }
+  if (darkQuery && darkQuery.addEventListener) darkQuery.addEventListener("change", applyTheme);
+  function renderTheme() {
+    document.querySelectorAll("#theme-seg button").forEach(b =>
+      b.setAttribute("aria-pressed", b.dataset.themeChoice === (style.theme || "auto") ? "true" : "false"));
+  }
+  document.querySelectorAll("#theme-seg button").forEach(b => b.addEventListener("click", () => {
+    style.theme = b.dataset.themeChoice; applyStyle(); saveStyle(); renderTheme();
+  }));
+
   function applyStyle() {
+    applyTheme();
     root.style.setProperty("--accent-base", style.accent);
     root.style.setProperty("--font-body", FONTS[style.font].stack);
     root.style.setProperty("--veil", String(style.veil));
@@ -912,8 +1013,8 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
   $("reset-style").addEventListener("click", async () => {
     const before = { ...style };
     style = { ...STYLE_DEFAULTS }; applyStyle(); saveStyle();
-    renderSwatches(); renderFonts(); showVeil();
-    showToast("色とフォントを戻しました", () => { style = before; applyStyle(); saveStyle(); renderSwatches(); renderFonts(); showVeil(); });
+    renderSwatches(); renderFonts(); showVeil(); renderTheme();
+    showToast("見た目を戻しました", () => { style = before; applyStyle(); saveStyle(); renderSwatches(); renderFonts(); showVeil(); renderTheme(); });
   });
 
   // =====================================================================
@@ -948,6 +1049,7 @@ nav.tabs button[aria-current="page"] { color: var(--accent); }
 
   // ---------- start ----------
   applyStyle();
+  renderTheme();
   setTodayline();
   renderDates();
   updatePreview();
